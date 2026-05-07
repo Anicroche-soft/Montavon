@@ -27,13 +27,13 @@ GLYPHS_DIR = UFO_DIR / "glyphs"
 # Toutes les valeurs SVG sont en px, mesurées depuis le BAS du cadre Figma.
 # Le script calcule automatiquement les valeurs UFO correspondantes.
 
-UNITS_PER_EM = 1000
+UNITS_PER_EM = 2048
 
 # Hauteur totale du cadre SVG dans Figma (px)
 SVG_HEIGHT = 24
 
 # Positions des lignes de référence, mesurées depuis le BAS du cadre (px)
-SVG_ASCENDER  = 20   # haut des capitales et des minuscules hautes
+SVG_ASCENDER  = 24   # haut des capitales et des minuscules hautes
 SVG_BASELINE  = 4    # ligne de base
 SVG_DESCENDER = 0    # bas des lettres qui descendent (= bas du cadre)
 
@@ -174,9 +174,11 @@ def parse_svg_d(d: str) -> list[tuple[str, list[float]]]:
     return commands
 
 
-def svg_d_to_glif_points(d: str) -> list[str]:
+def svg_d_to_contours(d: str) -> list[list[str]]:
     """
-    Convertit les commandes SVG path en balises <point> GLIF.
+    Convertit les commandes SVG path en liste de contours GLIF.
+    Chaque sous-chemin (M...Z) devient un contour séparé — indispensable
+    pour les glyphes comme B, P, R qui ont des contre-formes (fill-rule evenodd).
 
     Types de points UFO :
       line     → segment droit (L, H, V)
@@ -184,8 +186,9 @@ def svg_d_to_glif_points(d: str) -> list[str]:
       qcurve   → Bézier quadratique — précédé d'un point de contrôle sans type
     """
     commands = parse_svg_d(d)
+    all_contours = []
     points = []
-    cx, cy = 0.0, 0.0   # position courante en coordonnées SVG absolues
+    cx, cy = 0.0, 0.0
 
     for cmd, args in commands:
         if cmd == "M":
@@ -244,9 +247,16 @@ def svg_d_to_glif_points(d: str) -> list[str]:
             cx, cy = x, y
 
         elif cmd in "Zz":
-            pass  # fermeture implicite du contour
+            # Fin du sous-contour : on le sauvegarde et on repart à zéro
+            if points:
+                all_contours.append(points)
+                points = []
 
-    return points
+    # Sous-contour sans Z final
+    if points:
+        all_contours.append(points)
+
+    return all_contours
 
 
 # --- Construction du .glif --------------------------------------------------
@@ -255,20 +265,20 @@ def build_glif(char: str, glyph_name: str, paths: list[ET.Element],
                advance_width: int) -> str:
     """Construit le XML d'un fichier .glif (format UFO 3)."""
     unicode_hex = f"{ord(char):04X}"
-    contours = []
+    contours_xml_parts = []
 
     for path_el in paths:
         d = path_el.get("d", "").strip()
         if not d:
             continue
-        points = svg_d_to_glif_points(d)
-        if not points:
-            continue
-        indent = "        "
-        points_xml = "\n".join(f"{indent}{p}" for p in points)
-        contours.append(f"      <contour>\n{points_xml}\n      </contour>")
+        for points in svg_d_to_contours(d):
+            if not points:
+                continue
+            indent = "        "
+            points_xml = "\n".join(f"{indent}{p}" for p in points)
+            contours_xml_parts.append(f"      <contour>\n{points_xml}\n      </contour>")
 
-    contours_xml = "\n".join(contours)
+    contours_xml = "\n".join(contours_xml_parts)
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <glyph name="{glyph_name}" format="2">
   <advance width="{advance_width}"/>
@@ -322,12 +332,24 @@ def main():
     if fontinfo_path.exists():
         with open(fontinfo_path, "rb") as f:
             fontinfo = plistlib.load(f)
-        fontinfo["unitsPerEm"] = UNITS_PER_EM
-        fontinfo["ascender"]   = ASCENDER
-        fontinfo["descender"]  = DESCENDER
+        fontinfo["unitsPerEm"]                    = UNITS_PER_EM
+        # Métriques typographiques (sTypo*)
+        fontinfo["ascender"]                       = ASCENDER
+        fontinfo["descender"]                      = DESCENDER
+        # Métriques Windows — utilisées par les navigateurs pour la line-box
+        fontinfo["openTypeOS2TypoAscender"]        = ASCENDER
+        fontinfo["openTypeOS2TypoDescender"]       = DESCENDER
+        fontinfo["openTypeOS2TypoLineGap"]         = 0
+        fontinfo["openTypeOS2WinAscent"]           = ASCENDER
+        fontinfo["openTypeOS2WinDescent"]          = abs(DESCENDER)
+        # Métriques hhea — utilisées par macOS et les navigateurs WebKit
+        fontinfo["openTypeHheaAscender"]           = ASCENDER
+        fontinfo["openTypeHheaDescender"]          = DESCENDER
+        fontinfo["openTypeHheaLineGap"]            = 0
         with open(fontinfo_path, "wb") as f:
             plistlib.dump(fontinfo, f)
-        print(f"[fontinfo] ascender={ASCENDER}, descender={DESCENDER} mis à jour\n")
+        print(f"[fontinfo] ascender={ASCENDER}, descender={DESCENDER}")
+        print(f"           winAscent={ASCENDER}, winDescent={abs(DESCENDER)} mis à jour\n")
 
     svg_files = sorted(SVG_DIR.glob("uni*.svg"))
     if not svg_files:

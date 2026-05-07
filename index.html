@@ -9,21 +9,87 @@
 
         <style>
             @font-face {
-            font-family: 'Montavon';
-            src: url('./dist/montavon.ttf') format('truetype');
+                font-family: 'Montavon';
+                src: url('./dist/montavon.ttf') format('truetype');
             }
 
             body {
-            font-family: 'Montavon', Georgia, serif;
-            font-size: 4rem;
-            padding: 2rem;
-            background: #fff;
-            color: #111;
+                font-family: 'Montavon', Georgia, serif;
+                margin: 0;
+                padding: 1rem;
+                background: oklch(0.95 0.01 30);
+                color: #000;
+            }
+
+            body > * {
+                margin: 1rem 0;
+            }
+
+            body > span {
+                display: flex;
+                gap: 0.5rem;
+                font-size: 1.5rem;
+
+                background-image: url("lines.png");
+                background-size: contain;
+            }
+
+            body svg {
+                width: 1em;
+            }
+
+            body svg path {
+                fill: none;
+                stroke: oklch(0.65 0.2 30);
+                stroke-width: 0.08333em;
+            }
+
+            body > span > span {
+                color: oklch(0.65 0.2 30);
+                font-weight: normal;
+                font-size: 1em;
+                line-height: 1;
+                margin: 0;
+            }
+
+            body > span > span.temoin {
+                font-family: Georgia, serif;
+            }
+
+            body p:nth-child(1) {
+                font-size: 1rem;
+            }
+
+            body p:nth-child(2) {
+                font-size: 2rem;
+            }
+
+            body p:nth-child(3) {
+                font-size: 3rem;
+            }
+
+            body p:nth-child(4) {
+                font-size: 4rem;
             }
         </style>
     </head>
 
     <body>
-        <p>Aa Bb Cc</p>
+        <span>
+            <svg class="icone icone-anicroche" viewBox="0 0 24 24"><path d="M16 1H8C4.13401 1 1 4.13401 1 8V16C1 19.866 4.13401 23 8 23H16C19.866 23 23 19.866 23 16V8C23 4.13401 19.866 1 16 1Z"></path><path class="etoile" d="M13.9016 6.38184C13.6338 5.55802 12.8665 5.00012 12.0003 5C11.134 5.00012 10.3657 5.55802 10.0979 6.38184L9.4241 8.4541H7.24344C6.37697 8.4541 5.60883 9.01285 5.34109 9.83691C5.07353 10.6609 5.36677 11.5631 6.06765 12.0723L7.8323 13.3545L7.15847 15.4277C6.89091 16.2517 7.18418 17.1539 7.88504 17.6631C8.58598 18.1724 9.53464 18.1723 10.2356 17.6631L11.9993 16.3818L13.7639 17.6631C14.4649 18.1723 15.4136 18.1724 16.1145 17.6631C16.8154 17.1539 17.1087 16.2517 16.8411 15.4277L16.1673 13.3545L17.9319 12.0723C18.6328 11.5631 18.926 10.6609 18.6585 9.83691C18.3907 9.01285 17.6226 8.4541 16.7561 8.4541H14.5755L13.9016 6.38184Z"></path></svg>
+            <span>Anicroche</span>
+        </span>
+
+        <span>
+            <svg class="icone icone-anicroche" viewBox="0 0 24 24"><path d="M16 1H8C4.13401 1 1 4.13401 1 8V16C1 19.866 4.13401 23 8 23H16C19.866 23 23 19.866 23 16V8C23 4.13401 19.866 1 16 1Z"></path><path class="etoile" d="M13.9016 6.38184C13.6338 5.55802 12.8665 5.00012 12.0003 5C11.134 5.00012 10.3657 5.55802 10.0979 6.38184L9.4241 8.4541H7.24344C6.37697 8.4541 5.60883 9.01285 5.34109 9.83691C5.07353 10.6609 5.36677 11.5631 6.06765 12.0723L7.8323 13.3545L7.15847 15.4277C6.89091 16.2517 7.18418 17.1539 7.88504 17.6631C8.58598 18.1724 9.53464 18.1723 10.2356 17.6631L11.9993 16.3818L13.7639 17.6631C14.4649 18.1723 15.4136 18.1724 16.1145 17.6631C16.8154 17.1539 17.1087 16.2517 16.8411 15.4277L16.1673 13.3545L17.9319 12.0723C18.6328 11.5631 18.926 10.6609 18.6585 9.83691C18.3907 9.01285 17.6226 8.4541 16.7561 8.4541H14.5755L13.9016 6.38184Z"></path></svg>
+            <span class="temoin">Anicroche</span>
+        </span>
+
+        <div>
+            <p>Aa Bb Cc</p>
+            <p>Aa Bb Cc</p>
+            <p>Aa Bb Cc</p>
+            <p>Aa Bb Cc</p>
+        </div>
     </body>
 </html>

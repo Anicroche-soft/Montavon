@@ -8,10 +8,11 @@ FONTMAKE = $(VENV)/bin/fontmake
 convert: $(VENV)
 	$(PYTHON) scripts/svg_to_glif.py
 
-# Compiler l'UFO en .ttf
+# Compiler l'UFO en .ttf et corriger les métriques
 build: $(VENV)
 	mkdir -p dist
 	$(FONTMAKE) -u sources/montavon.ufo -o ttf --output-dir dist
+	$(PYTHON) scripts/fix_metrics.py
 
 # Créer le virtualenv et installer les dépendances si besoin
 $(VENV):
