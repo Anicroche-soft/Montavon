@@ -4,6 +4,7 @@
 <dict>
 	<key>public.glyphOrder</key>
 	<array>
+		<string>-</string>
 		<string>A</string>
 		<string>B</string>
 		<string>a</string>
@@ -27,6 +28,17 @@
 		<string>s</string>
 		<string>t</string>
 		<string>u</string>
+		<string>uni0020</string>
+		<string>uni00A0</string>
+		<string>uni2002</string>
+		<string>uni2003</string>
+		<string>uni2004</string>
+		<string>uni2005</string>
+		<string>uni2006</string>
+		<string>uni2009</string>
+		<string>uni2013</string>
+		<string>uni2014</string>
+		<string>uni202F</string>
 		<string>v</string>
 		<string>w</string>
 		<string>x</string>

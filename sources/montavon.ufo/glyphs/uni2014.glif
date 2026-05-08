@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="uni2014" format="2">
+  <advance width="2048"/>
+  <unicode hex="2014"/>
+  <outline>
+      <contour>
+        <point x="2048" y="597" type="line"/>
+        <point x="2095" y="597"/>
+        <point x="2133" y="559"/>
+        <point x="2133"  y="512"  type="curve"/>
+        <point x="2133" y="465"/>
+        <point x="2095" y="427"/>
+        <point x="2048"  y="427"  type="curve"/>
+        <point x="0" y="427" type="line"/>
+        <point x="-47" y="427"/>
+        <point x="-85" y="465"/>
+        <point x="-85"  y="512"  type="curve"/>
+        <point x="-85" y="559"/>
+        <point x="-47" y="597"/>
+        <point x="0"  y="597"  type="curve"/>
+        <point x="2048" y="597" type="line"/>
+      </contour>
+  </outline>
+</glyph>
